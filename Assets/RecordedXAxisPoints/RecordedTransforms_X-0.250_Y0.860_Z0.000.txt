@@ -1,0 +1,12 @@
+Target X Position: -0.25
+Target Y Position: 0.86
+Target Z Position: 0
+
+link_1_0: Rotation(359.6626, 62.60275, 359.3484)
+link_2_0: Rotation(79.53866, 0.0001410635, 90.00017)
+link_3_0: Rotation(59.13062, 180, 270)
+link_4_0: Rotation(9.791541, -1.732789E-06, 270)
+link_5_0: Rotation(356.0271, 180, 270)
+link_6_0: Rotation(359.8786, -9.95182E-06, 270)
+HandE: Rotation(0.1088046, 177.3311, 274.67)
+--------------------------------------------------
