@@ -1,30 +1,31 @@
-# H2B_MotionBridge
+# RBF_Interpolation
 
-**Note: This is a new project with untested parameters. Please use at your own risk.**
 
-This Unity project (v2022.3.13f1) is indented for scientific work on human to robot natural motion tranfer in unstructured and unstable environment, in which robots perform object manipulation tasks. 
-The heart of the code is based on Unity's ArticulationBodies, driven by NVIDIA's PhysX physics engine for accurate robotic simulation and hand/gripper object interactions during grasping. 
+Overview
 
-**Pre-requisites**
-<dl>
-  <dt>Hardware:</dt>
-  <dd> Windows-10 PC with a Meta Desktop compatible GPU, which excludes the RTX3050 and the RTX3050Ti</dd>
-  <dd> Meta Quest headsets (versions 1,2,3 or Pro are all compatible) with hand-tracking enabled </dd>
-  <dd> Meta Link cable </dd>
+This Unity v6000.0.23f1 project focuses on Radial Basis Function (RBF) interpolation for robotic arm motion control. We simulate a KUKA iiwa‑7 arm using Unity’s ArticulationBodies (powered by NVIDIA PhysX) repository given by my supervisor Prof.Eyal Ofek to develop on top of this and drive it via a custom ArticulationDriver that records expert‑defined pose–angle samples. At runtime, the RBF engine reads these sparse dataset entries, selects the nearest neighbors to any new target, and blends their joint configurations through inverse‑distance weighting and quaternion averaging. This lightweight, data‑driven approach generates smooth, real‑time joint trajectories without on‑the‑fly inverse‑kinematics solving or heavy dynamic modeling.
 
-  <dt>Software:</dt>
-  <dd> Meta Desktop app </dd>
-  <dd> Unity v2022.3.13f1 </dd>
-  <dd> Unity's OpenXR package for VR and hand-tracking access for Meta devices </dd>
 
-  <dt>Optional (untested alternatives):</dt>
-  <dd> Steam and SteamVR </dd>
-  <dd> Leap Motion hand-tracking </dd> 
-</dl>
 
-<img src="h2b_motionbridge.gif" alt="Unity3D environment with two Kuka arms" width="640" height="480">
+Getting Started
 
-This image shows two KUKA iiwa-7 arms. The arm on the right (physics-arm) is the one we are mainly using for this project. The arm on the left (inverse kinematics arm (IK-arm)) is for comparison purposes only.
+Clone the repository
 
-The physics-arm is based on a chain of articulation bodies that are driven by forces based on the target object position. The target object by default will be the user's right hand index finger tip, provided by the Meta Quest hand tracking package. 
+git clone git@github.com:Arvin-Zi/H2B_MotionBridge.git
+cd H2B_MotionBridge
 
+Open in Unity
+
+Launch Unity Hub, click Add, and select this project’s root folder.
+
+Ensure Unity 6000.0.23f1 is installed, then click Open.
+
+Dependencies
+
+Install the Ultra package for Leap Motion hand‑tracking input.
+
+Alternatively, use a 3D sphere in the scene as a target.
+
+
+
+Developed by Seyed Arvin Ziaei, University of Birmingham (2024–25).

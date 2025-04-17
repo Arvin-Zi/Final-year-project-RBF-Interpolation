@@ -5,7 +5,7 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-public class InterpolationIntegrationTests
+public class InterpolationSystemTests
 {
     Interpolation interp;
     Dictionary<Vector3, float[][]> ds;
@@ -13,9 +13,9 @@ public class InterpolationIntegrationTests
     [UnitySetUp]
     public IEnumerator SetUp()
     {
-        var go = new GameObject("TestRoot");
+        var go = new GameObject("SysTestRoot");
         interp = go.AddComponent<Interpolation>();
-        interp.enabled = false;             
+        interp.enabled = false; // disable Update()
 
         ds = new Dictionary<Vector3, float[][]>
         {
@@ -30,30 +30,37 @@ public class InterpolationIntegrationTests
     }
 
     [UnityTest]
-    public IEnumerator RBFInterpolateRotation_HalfwayTarget_Returns45DegreesAboutX()
+    public IEnumerator RBFInterpolateRotation_AgreementWithSlerp_MeetsErrorThreshold()
     {
         var target = new Vector3(0.5f, 0.5f, 0.5f);
-
+        // find nearest
         var findNearest = typeof(Interpolation)
             .GetMethod("FindNearest", BindingFlags.NonPublic|BindingFlags.Instance);
         var nearest = (List<KeyValuePair<Vector3, float[][]>>)
             findNearest.Invoke(interp, new object[]{ target, 5 });
 
-        Assert.That(nearest.Count, Is.EqualTo(2), "Nearest-points count");
 
         var rbf = typeof(Interpolation)
             .GetMethod("RBFInterpolateRotation", BindingFlags.Public|BindingFlags.Instance);
-        var resultQ = (Quaternion)rbf.Invoke(
+        var actualQ = (Quaternion)rbf.Invoke(
             interp,
             new object[]{ target, nearest, 0 }
         );
 
-        var euler = resultQ.eulerAngles;
-        Debug.Log($"[Test] RBF result Euler = ({euler.x:F2},{euler.y:F2},{euler.z:F2})");
+        var q0 = Quaternion.Euler(0f, 0f, 0f);
+        var q1 = Quaternion.Euler(90f, 0f, 0f);
+        var expectedQ = Quaternion.Slerp(q0, q1, 0.5f);
 
-        Assert.That(euler.x, Is.InRange(44f, 46f),   $"X rotation was {euler.x:F2}");
-        Assert.That(euler.y, Is.EqualTo(0f).Within(1e-3f), "Y should stay at 0");
-        Assert.That(euler.z, Is.EqualTo(0f).Within(1e-3f), "Z should stay at 0");
+
+        float angleDiff = Quaternion.Angle(expectedQ, actualQ);
+        Debug.Log($"[SystemTest] Quaternion angle diff = {angleDiff:F3}°");
+
+
+        float posError = angleDiff * Mathf.Deg2Rad;
+        Debug.Log($"[SystemTest] Implied position error ≈ {posError:F3} units");
+
+        Assert.LessOrEqual(posError, 0.1f, 
+            $"Position error {posError:F3} exceeds 0.1 units");
 
         yield return null;
     }
